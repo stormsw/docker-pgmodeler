@@ -3,10 +3,15 @@ FROM debian:stretch-slim
 LABEL maintainer "Kayvan Sylvan <kayvansylvan@gmail.com>"
 
 ENV PG_VERSION 0.9.2-beta1
+ENV DEBIAN_FRONTEND=noninteractive
 
-ADD https://codeload.github.com/pgmodeler/pgmodeler/tar.gz/v${PG_VERSION} /usr/local/src/
+#ADD https://codeload.github.com/pgmodeler/pgmodeler/tar.gz/v${PG_VERSION} /usr/local/src/
+ADD https://github.com/pgmodeler/pgmodeler/archive/${PG_VERSION}.zip /usr/local/src
+#COPY ${PG_VERSION}.zip/* /usr/local/src
 WORKDIR /usr/local/src/
 
+RUN apt-get update && apt-get -yq install unzip
+RUN unzip ${PG_VERSION}.zip
 RUN if [ ! -d pgmodeler-${PG_VERSION} ]; then tar xvzf v${PG_VERSION}; fi \
   && cd pgmodeler-${PG_VERSION} \
   && BUILD_PKGS="make g++ qt5-qmake libxml2-dev \
